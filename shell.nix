@@ -6,6 +6,7 @@ with import <nixpkgs> {};
       numpy
       toolz
       jupyter
+      matplotlib
     ]
   )
 ).env

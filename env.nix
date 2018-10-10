@@ -5,5 +5,6 @@ python36.withPackages (
     numpy
     toolz
     jupyter
+    matplotlib
   ]
 )
