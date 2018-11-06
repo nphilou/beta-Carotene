@@ -7,6 +7,7 @@ with import <nixpkgs> {};
       toolz
       jupyter
       matplotlib
+      scikitlearn
     ]
   )
 ).env

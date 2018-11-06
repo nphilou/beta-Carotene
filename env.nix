@@ -6,5 +6,6 @@ python36.withPackages (
     toolz
     jupyter
     matplotlib
+    scikitlearn
   ]
 )
