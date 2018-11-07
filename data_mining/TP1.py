@@ -2,11 +2,13 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-from sklearn.datasets import load_breast_cancer
-from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_breast_cancer, fetch_mldata
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import classification_report, confusion_matrix
+from keras.datasets import mnist
+
 
 cancer = load_breast_cancer()
 print(cancer['data'].shape)
@@ -32,3 +34,12 @@ print(confusion_matrix(y_test, predictions))
 
 print(classification_report(y_test, predictions))
 
+# MNIST
+
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+print("MNIST Loading : OK")
+
+some_digit = X[36000]
+some_digit_image = some_digit.reshape(28, 28)
+
+plt.imshow(some_digit_image, cmap=matplotlib.cm.binary, interpolation="nearest")

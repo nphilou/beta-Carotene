@@ -7,5 +7,6 @@ python36.withPackages (
     jupyter
     matplotlib
     scikitlearn
+    Keras
   ]
 )

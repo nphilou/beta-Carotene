@@ -8,6 +8,7 @@ with import <nixpkgs> {};
       jupyter
       matplotlib
       scikitlearn
+      keras
     ]
   )
 ).env
