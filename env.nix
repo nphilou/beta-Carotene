@@ -8,5 +8,7 @@ python36.withPackages (
     matplotlib
     scikitlearn
     Keras
+    tensorflowWithCuda
+    cudnn
   ]
 )
