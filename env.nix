@@ -7,8 +7,11 @@ python36.withPackages (
     jupyter
     matplotlib
     scikitlearn
+    pandas
     Keras
     tensorflowWithCuda
     cudnn
   ]
 )
+
+# $ nix-build env.nix -o env
