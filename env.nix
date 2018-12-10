@@ -1,4 +1,4 @@
-with import <nixpkgs> {};
+with import <unstable> {};
 
 python36.withPackages (
   ps: with ps; [
