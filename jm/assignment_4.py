@@ -65,9 +65,44 @@
 # IT SHOULD PERFORM THE APPROPRIATE TRANSFORMATIONS TO THE DATAFRAME
 # IT SHOULD RETURN THE TRANSFORMED DATAFRAME
 
+import pandas as pd
+import numpy as np
+
+
 def exercise_01():
-    df = None
+    df = pd.read_table("/Users/Philippe/Programmation/beta-Carotene/jm/nat2017_txt/nat2017.txt",
+                       names=['gender', 'name', 'year', 'births'], skiprows=1)
+
+    df = df[['year', 'name', 'gender', 'births']]
+
+    df = df[df.year.apply(lambda x: x.isnumeric())]
+
+    df.year = df.year.astype(np.int64)
+
+    df.gender = df.gender.map({1: 'M', 2: 'F'})
+
+    df = df[df.name.str.len() > 1]
+
+    df.name = df.name.str.title()
+
+    print("Avant la suppression")
+    print(df[df.name == '_Prenoms_Rares'].head())
+
+    df = df[df.name != '_Prenoms_Rares']
+
+    print("Après la suppression")
+    print(df[df.name == '_Prenoms_Rares'].head())
+
+    df.reset_index(inplace=True, drop=True)
+
+    print("HS : ")
+    print(df.head())
+
+    print(df.dtypes)
+
     return df
+
+exercise_01()
 
 
 # **Homework, out of the scope of the assignment**
