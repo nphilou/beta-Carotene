@@ -12,6 +12,7 @@ with import <nixpkgs> {};
         Keras
         tensorflowWithCuda
         cudnn
+        ipykernel
     ]
   )
 ).env
