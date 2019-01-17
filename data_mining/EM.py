@@ -66,7 +66,7 @@ def plot_gmm(x, y, means, covariances, index, title):
 
 
 if __name__ == '__main__':
-    categories = ['sci.electronics', 'rec.sport.baseball', 'sci.space', 'comp.graphics']
+    categories = ['sci.electronics', 'rec.sport.baseball']
     n = categories.__len__()
 
     dataset = fetch_20newsgroups(subset='all', categories=categories, shuffle=True)

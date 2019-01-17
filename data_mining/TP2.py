@@ -4,7 +4,7 @@ import numpy as np
 
 
 def rui(r, u):
-    return r.iloc[u, ][r.iloc[u, ] != 0].index
+    return r.iloc[u,][r.iloc[u,] != 0].index
 
 
 def yyt(y, resui, k=100):
@@ -32,8 +32,8 @@ def alterning_least_square(X_train, k=100, max_iter=100):
     print(yyt(resui=rui(X_train, 1), y=Y))
 
     for step in range(max_iter):
-       for u in range(n):
-           X = 0
+        for u in range(n):
+            X = 0
 
 
 if __name__ == '__main__':
@@ -50,6 +50,3 @@ if __name__ == '__main__':
     # print(rui(X_train, 1))
 
     alterning_least_square(X_train, k=100, max_iter=100)
-
-
-
