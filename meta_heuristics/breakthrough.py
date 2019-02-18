@@ -110,7 +110,6 @@ class Board(object):
             return value
         elif self.won(White):
             print("White won")
-            exit(0)
             return 1.0
         elif self.won(Black):
             print("Black won")
@@ -125,7 +124,8 @@ class Board(object):
                     return 0.0
                 return 1.0
 
-            best_move = l[0]
+            # best_move = l[0]
+            best_move = np.random.choice(l)
             best_score = -1000000.0
             sum_playouts = 0
 
@@ -146,7 +146,8 @@ class Board(object):
                     puct = (s[1][move_index] / s[0][move_index]) + 0.3 * s[3][move_index] * math.sqrt(sum_playouts) / \
                            s[0][move_index]
                 else:
-                    puct = 0
+                    # puct = best_score
+                    continue
 
                 # print("puct = " + str(puct))
                 if puct > best_score:
@@ -342,7 +343,7 @@ if __name__ == '__main__':
 
     # print(tt1)
 
-    board.PUCT(tt=tt1, nb_playouts=100)
+    board.PUCT(tt=tt1, nb_playouts=400)
 
     # m = Move(White, 1, 0, 2, 0)
     # print(m.code())

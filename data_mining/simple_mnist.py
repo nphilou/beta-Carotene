@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -12,72 +13,104 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.losses import categorical_crossentropy
 from keras.utils import to_categorical
+import keras
+from keras.datasets import mnist
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D
+from keras import backend as K
 
-cancer = load_breast_cancer()
-print(cancer['data'].shape)
 
-X = cancer['data']
-y = cancer['target']
+def cancer():
+    cancer = load_breast_cancer()
+    print(cancer['data'].shape)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y)
-scaler = StandardScaler()
+    X = cancer['data']
+    y = cancer['target']
 
-scaler.fit(X_train)
+    X_train, X_test, y_train, y_test = train_test_split(X, y)
+    scaler = StandardScaler()
 
-X_train = scaler.transform(X_train)
-X_test = scaler.transform(X_test)
+    scaler.fit(X_train)
 
-mlp = MLPClassifier(hidden_layer_sizes=(50, 50, 50), max_iter=200)
+    X_train = scaler.transform(X_train)
+    X_test = scaler.transform(X_test)
 
-mlp.fit(X_train, y_train)
+    mlp = MLPClassifier(hidden_layer_sizes=(50, 50, 50), max_iter=200)
 
-predictions = mlp.predict(X_test)
+    mlp.fit(X_train, y_train)
 
-print(confusion_matrix(y_test, predictions))
+    predictions = mlp.predict(X_test)
 
-print(classification_report(y_test, predictions))
+    print(confusion_matrix(y_test, predictions))
 
-# MNIST
+    print(classification_report(y_test, predictions))
 
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-print("MNIST Loading : OK")
 
-x_train = x_train.reshape(60000, 784)
-x_test = x_test.reshape(10000, 784)
-x_train = x_train.astype('float32')
-x_test = x_test.astype('float32')
-x_train /= 255
-x_test /= 255
+if __name__ == '__main__':
 
-# some_digit = x_train[36000]
-# some_digit_image = some_digit.reshape(28, 28)
+    batch_size = 32
+    num_classes = 10
+    epochs = 1
 
-# plt.imshow(some_digit_image, cmap=matplotlib.cm.binary, interpolation="nearest")
-# plt.show()
+    # input image dimensions
+    img_rows, img_cols = 28, 28
 
-y_train_5 = (y_train == 5)
-y_test_5 = (y_test == 5)
+    # MNIST
 
-y_train = to_categorical(y_train_5, 2)
-y_test = to_categorical(y_test_5, 2)
+    (x_train, y_train), (x_test, y_test) = mnist.load_data()
+    print("MNIST Loading : OK")
 
-model = Sequential()
-model.add(Dense(20, input_shape=(784,), kernel_initializer='uniform', activation='relu'))
-model.add(Dense(20, kernel_initializer='uniform', activation='relu'))
-model.add(Dense(2, kernel_initializer='uniform', activation='softmax'))
+    # some_digit = x_train[36000]
+    # some_digit_image = some_digit.reshape(28, 28)
 
-model.summary()
+    # plt.imshow(some_digit_image, cmap=matplotlib.cm.binary, interpolation="nearest")
+    # plt.show()
 
-model.compile(loss=categorical_crossentropy,
-              optimizer='adam',
-              metrics=['accuracy'])
+    if K.image_data_format() == 'channels_first':
+        x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
+        x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
+        input_shape = (1, img_rows, img_cols)
+    else:
+        x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
+        x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
+        input_shape = (img_rows, img_cols, 1)
 
-hist = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=100, batch_size=256, shuffle=True,
-                 verbose=2)
+    x_train = x_train.astype('float32')
+    x_test = x_test.astype('float32')
+    x_train /= 255
+    x_test /= 255
 
-score = model.evaluate(x_test, y_test, verbose=0)
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
+    print('x_train shape:', x_train.shape)
+    print(x_train.shape[0], 'train samples')
+    print(x_test.shape[0], 'test samples')
 
-# Test loss: 0.06656138199758682
-# Test accuracy: 0.9925
+    # convert class vectors to binary class matrices
+    y_train = keras.utils.to_categorical(y_train, num_classes)
+    y_test = keras.utils.to_categorical(y_test, num_classes)
+
+    model = Sequential()
+    model.add(Conv2D(32, kernel_size=(3, 3),
+                     activation='relu',
+                     input_shape=input_shape))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes, activation='softmax'))
+
+    model.compile(loss=keras.losses.categorical_crossentropy,
+                  optimizer=keras.optimizers.Adadelta(),
+                  metrics=['accuracy'])
+
+    model.fit(x_train, y_train,
+              batch_size=batch_size,
+              epochs=epochs,
+              verbose=1,
+              validation_data=(x_test, y_test))
+    score = model.evaluate(x_test, y_test, verbose=0)
+    print('Test loss:', score[0])
+    print('Test accuracy:', score[1])
+
