@@ -144,7 +144,6 @@ class Board(object):
 
         return bitmap
 
-
     def getOutputNetwork(self):
         if self.turn == White:
             return (SizePolicy + 1) * [1.0]
@@ -277,18 +276,17 @@ class Move(object):
 
 
 if __name__ == '__main__':
-
     # m = b.flat(100)  # < MCTS
     # print(m)
     b = Board()
     print(b.to_matrix())
 
-    #l = b.legalMoves()
-    #b.printMoves(l)
-    #r = b.playout()
-    #print(r)
-    #b = Board()
-    #m = b.flat(100)
-    #print(m)
-    #m = b.PUCT({})
-    #print(m)
+    # l = b.legalMoves()
+    # b.printMoves(l)
+    # r = b.playout()
+    # print(r)
+    # b = Board()
+    # m = b.flat(100)
+    # print(m)
+    # m = b.PUCT({})
+    # print(m)
