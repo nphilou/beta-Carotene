@@ -140,31 +140,6 @@ class Board(object):
                 best = m
         return best
 
-    def create_network(self):
-        num_classes = 76
-        batch_size = 32
-        epochs = 1
-        input_shape = (3, Dx, Dy)
-
-        model = Sequential()
-        model.add(Conv2D(32, kernel_size=(3, 3),
-                         activation='relu',
-                         input_shape=input_shape))
-        #model.add(Conv2D(64, (3, 3), activation='relu'))
-        #model.add(MaxPooling2D(pool_size=(2, 2)))
-        #model.add(Dropout(0.25))
-        model.add(Flatten())
-        model.add(Dense(128, activation='relu'))
-        model.add(Dropout(0.5))
-        model.add(Dense(num_classes, activation='softmax'))
-
-        model.compile(loss=keras.losses.categorical_crossentropy,
-                      optimizer=keras.optimizers.Adadelta(),
-                      metrics=['accuracy'])
-
-        # model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1)
-        return model
-
     def to_matrix(self):
         bitmap = np.zeros((3, Dx, Dy), dtype=int)
 
@@ -175,10 +150,15 @@ class Board(object):
         return bitmap
 
     def getOutputNetwork(self):
+
+        triple_matrix = self.to_matrix().reshape((1, 3, 5, 5))
+
         if self.turn == White:
-            return (SizePolicy + 1) * [1.0]
+            return white_cnn.predict(triple_matrix)[0]
+            # return (SizePolicy + 1) * [1.0]
         else:
-            return (SizePolicy + 1) * [1.0]
+            return black_cnn.predict(triple_matrix)[0]
+            # return (SizePolicy + 1) * [1.0]
 
     def descent(self, TT):
         if self.h not in TT:
@@ -188,7 +168,7 @@ class Board(object):
             l.append(SizePolicy * [0.0])
             l.append(output)
             TT[self.h] = l
-            return output[Dx * Dy]
+            return output[3 * Dx * Dy]
         elif self.won(White):
             return 1.0
         elif self.won(Black):
@@ -238,6 +218,7 @@ class Board(object):
             i = best.code()
             s[0][i] = s[0][i] + 1
             s[1][i] = s[1][i] + v
+
             return v
 
     def PUCT(self, TT, nb_playouts=800):
@@ -254,6 +235,9 @@ class Board(object):
             if s[0][i] > best_score:
                 best_score = s[0][i]
                 best = m
+
+        # data[self.turn].append([self.to_matrix(), s[0] / sum_playouts, v])
+
         return best
 
 
@@ -305,6 +289,32 @@ class Move(object):
         return 3 * (Dx * self.x1 + self.y1) + direction
 
 
+def create_model():
+    num_classes = 76
+    batch_size = 32
+    epochs = 1
+    input_shape = (3, Dx, Dy)
+
+    model = Sequential()
+    model.add(Conv2D(32, kernel_size=(3, 3),
+                     activation='relu',
+                     input_shape=input_shape))
+    # model.add(Conv2D(64, (3, 3), activation='relu'))
+    # model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes, activation='softmax'))
+
+    model.compile(loss=keras.losses.categorical_crossentropy,
+                  optimizer=keras.optimizers.Adadelta(),
+                  metrics=['accuracy'])
+
+    # model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1)
+    return model
+
+
 if __name__ == '__main__':
     # m = b.flat(100)  # < MCTS
     # print(m)
@@ -319,21 +329,43 @@ if __name__ == '__main__':
 
     print(x.shape)
 
-    nn = b.create_network()
-
-    nn.summary()
-
-    res = nn.predict(x)
-
-    print(res)
-    print(res.shape)
+    black_cnn = create_model()
+    white_cnn = create_model()
 
     # l = b.legalMoves()
     # b.printMoves(l)
     # r = b.playout()
     # print(r)
-    # b = Board()
-    # m = b.flat(100)
-    # print(m)
-    # m = b.PUCT({})
-    # print(m)
+    b = Board()
+    b.PUCT({})
+
+    winner = []
+    nb_playouts = SizePolicy * [0]
+
+    for i in range(1):
+        data = {White: [], Black: []}
+        b = Board()
+        tt = {}
+        a = 0
+        while not (b.won(White) or b.won(Black)):
+            best_move = b.PUCT(tt, nb_playouts=200)
+            print(a)
+            b.print()
+            nb_playouts[best_move.code()] += 1
+            print(data)
+            print("----")
+            print(tt[b.h][0])
+            print(tt[b.h][0] / np.sum(tt[b.h][0]))
+            print(np.sum(tt[b.h][0]))
+            data[b.turn].append([b.to_matrix(), tt[b.h][0] / np.sum(tt[b.h][0])])
+            b.play(best_move)
+            a += 1
+            exit(0)
+
+        if b.won(White):
+            winner += [White]
+        else:
+            winner += [Black]
+
+        print(winner)
+        print(data)
