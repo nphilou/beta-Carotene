@@ -1,8 +1,13 @@
 import math
 
+import keras
 import numpy as np
 import random
 from sys import stdin, stdout, stderr
+
+from keras import Sequential
+from keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense
+from keras import backend as K
 
 Dx = 5
 Dy = 5
@@ -134,6 +139,31 @@ class Board(object):
                 best_score = sum
                 best = m
         return best
+
+    def create_network(self):
+        num_classes = 76
+        batch_size = 32
+        epochs = 1
+        input_shape = (3, Dx, Dy)
+
+        model = Sequential()
+        model.add(Conv2D(32, kernel_size=(3, 3),
+                         activation='relu',
+                         input_shape=input_shape))
+        #model.add(Conv2D(64, (3, 3), activation='relu'))
+        #model.add(MaxPooling2D(pool_size=(2, 2)))
+        #model.add(Dropout(0.25))
+        model.add(Flatten())
+        model.add(Dense(128, activation='relu'))
+        model.add(Dropout(0.5))
+        model.add(Dense(num_classes, activation='softmax'))
+
+        model.compile(loss=keras.losses.categorical_crossentropy,
+                      optimizer=keras.optimizers.Adadelta(),
+                      metrics=['accuracy'])
+
+        # model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1)
+        return model
 
     def to_matrix(self):
         bitmap = np.zeros((3, Dx, Dy), dtype=int)
@@ -279,7 +309,24 @@ if __name__ == '__main__':
     # m = b.flat(100)  # < MCTS
     # print(m)
     b = Board()
-    print(b.to_matrix())
+    print(b.to_matrix().shape)
+    print(b.to_matrix().reshape((1, 3, 5, 5)))
+    print(keras.backend.image_data_format())
+    K.set_image_data_format('channels_first')
+    print(keras.backend.image_data_format())
+
+    x = b.to_matrix().reshape((1, 3, 5, 5))
+
+    print(x.shape)
+
+    nn = b.create_network()
+
+    nn.summary()
+
+    res = nn.predict(x)
+
+    print(res)
+    print(res.shape)
 
     # l = b.legalMoves()
     # b.printMoves(l)
