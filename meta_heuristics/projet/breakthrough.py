@@ -104,6 +104,14 @@ class Board(object):
                     return True
         return False
 
+    def winner(self):
+        for color in [White, Black]:
+            if self.won(color):
+                return color
+            else:
+                return Empty
+
+
     def playout(self):
         l = self.legalMoves()
         while len(l) > 0 and not self.won(White) and not self.won(Black):
@@ -341,31 +349,34 @@ if __name__ == '__main__':
 
     winner = []
     nb_playouts = SizePolicy * [0]
+    x_train_white = []
+    x_train_black = []
 
     for i in range(1):
-        data = {White: [], Black: []}
+        positions = {White: [], Black: []}
         b = Board()
         tt = {}
         a = 0
-        while not (b.won(White) or b.won(Black)):
+        while not (b.winner() in [White, Black]):
             best_move = b.PUCT(tt, nb_playouts=200)
-            print(a)
-            b.print()
+            # print(a)
+            # b.print()
             nb_playouts[best_move.code()] += 1
-            print(data)
-            print("----")
-            print(tt[b.h][0])
-            print(tt[b.h][0] / np.sum(tt[b.h][0]))
-            print(np.sum(tt[b.h][0]))
-            data[b.turn].append([b.to_matrix(), tt[b.h][0] / np.sum(tt[b.h][0])])
+            # print(data)
+            # print("----")
+            # print(tt[b.h][0])
+            # print(tt[b.h][0] / np.sum(tt[b.h][0]))
+            # print(np.sum(tt[b.h][0]))
+            positions[b.turn].append([b.to_matrix(), tt[b.h][0] / np.sum(tt[b.h][0])])
             b.play(best_move)
             a += 1
-            exit(0)
 
-        if b.won(White):
-            winner += [White]
-        else:
-            winner += [Black]
+        print(positions[White])
 
-        print(winner)
-        print(data)
+        x_train_white += [x+[b.winner()] for x in positions[White]]
+        x_train_black.append([x+[b.winner()] for x in positions[Black]])
+
+        print(x_train_white)
+
+        # print(winner)
+        # print(positions)
