@@ -108,9 +108,7 @@ class Board(object):
         for color in [White, Black]:
             if self.won(color):
                 return color
-            else:
-                return Empty
-
+        return Empty
 
     def playout(self):
         l = self.legalMoves()
@@ -313,11 +311,10 @@ def create_model():
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(num_classes, activation='softmax'))
+    model.add(Dense(num_classes, activation='relu'))
 
-    model.compile(loss=keras.losses.categorical_crossentropy,
-                  optimizer=keras.optimizers.Adadelta(),
-                  metrics=['accuracy'])
+    model.compile(loss=keras.losses.mse,
+                  optimizer=keras.optimizers.Adam(), metrics=['acc'])
 
     # model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1)
     return model
@@ -328,7 +325,7 @@ if __name__ == '__main__':
     # print(m)
     b = Board()
     print(b.to_matrix().shape)
-    print(b.to_matrix().reshape((1, 3, 5, 5)))
+    # print(b.to_matrix().reshape((1, 3, 5, 5)))
     print(keras.backend.image_data_format())
     K.set_image_data_format('channels_first')
     print(keras.backend.image_data_format())
@@ -344,39 +341,67 @@ if __name__ == '__main__':
     # b.printMoves(l)
     # r = b.playout()
     # print(r)
-    b = Board()
-    b.PUCT({})
+    # b = Board()
+    # b.PUCT({})
 
-    winner = []
     nb_playouts = SizePolicy * [0]
-    x_train_white = []
-    x_train_black = []
+    winwhite = 0
+    winblack = 0
 
-    for i in range(1):
-        positions = {White: [], Black: []}
-        b = Board()
-        tt = {}
-        a = 0
-        while not (b.winner() in [White, Black]):
-            best_move = b.PUCT(tt, nb_playouts=200)
-            # print(a)
+
+    for game in range(1):
+        x_train_white = []
+        x_train_black = []
+        y_train_white = []
+        y_train_black = []
+
+        for i in range(50):
+            positions = {White: [], Black: []}
+            b = Board()
+            tt = {}
+            winner = 0
+            a = 0
+
+            while not (b.won(White) or b.won(Black)):
+                best_move = b.PUCT(tt, nb_playouts=800)
+                # print(a)
+                # b.print()
+                # nb_playouts[best_move.code()] += 1
+                # print(data)
+                # print("----")
+                # print(tt[b.h][0])
+                # print(tt[b.h][0] / np.sum(tt[b.h][0]))
+                # print(np.sum(tt[b.h][0]))
+                positions[b.turn].append([b.to_matrix(), tt[b.h][0] / np.sum(tt[b.h][0])])
+                b.play(best_move)
+                a += 1
+
+            # 3d_board = array([[[empty]], [white], [black]])
+            # [[3d_board, array([freq, winner])], ...]
+
+            winner = b.winner()
+            # positions[winner].pop()
+
+            for color in [White, Black]:
+                for sublist in positions[color]:
+                    sublist[1] = np.append(sublist[1], winner)
+
+            x_train_white += [x[0] for x in positions[White]]
+            x_train_black += [x[0] for x in positions[Black]]
+
+            y_train_white += [x[1] for x in positions[White]]
+            y_train_black += [x[1] for x in positions[Black]]
+
+            print("-_-_-_-_ NEW GAME -_-_-_-_")
             # b.print()
-            nb_playouts[best_move.code()] += 1
-            # print(data)
-            # print("----")
-            # print(tt[b.h][0])
-            # print(tt[b.h][0] / np.sum(tt[b.h][0]))
-            # print(np.sum(tt[b.h][0]))
-            positions[b.turn].append([b.to_matrix(), tt[b.h][0] / np.sum(tt[b.h][0])])
-            b.play(best_move)
-            a += 1
+            print(str(winner) + ' is the winner')
+            if b.won(White):
+                winwhite += 1
+            if b.won(Black):
+                winblack += 1
 
-        print(positions[White])
+            white_cnn.fit(np.asarray(x_train_white), np.asarray(y_train_white), epochs=50, verbose=0)
+            black_cnn.fit(np.asarray(x_train_black), np.asarray(y_train_black), epochs=50, verbose=0)
 
-        x_train_white += [x+[b.winner()] for x in positions[White]]
-        x_train_black.append([x+[b.winner()] for x in positions[Black]])
-
-        print(x_train_white)
-
-        # print(winner)
-        # print(positions)
+    print(winwhite)
+    print(winblack)
