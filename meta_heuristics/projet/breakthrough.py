@@ -242,8 +242,6 @@ class Board(object):
                 best_score = s[0][i]
                 best = m
 
-        # data[self.turn].append([self.to_matrix(), s[0] / sum_playouts, v])
-
         return best
 
 
@@ -297,8 +295,6 @@ class Move(object):
 
 def create_model():
     num_classes = 76
-    batch_size = 32
-    epochs = 1
     input_shape = (3, Dx, Dy)
 
     model = Sequential()
@@ -307,10 +303,10 @@ def create_model():
                      input_shape=input_shape))
     # model.add(Conv2D(64, (3, 3), activation='relu'))
     # model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+    # model.add(Dropout(0.25))
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dropout(0.5))
+    # model.add(Dense(128, activation='relu'))
+    # model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='relu'))
 
     model.compile(loss=keras.losses.mse,
@@ -323,16 +319,8 @@ def create_model():
 if __name__ == '__main__':
     # m = b.flat(100)  # < MCTS
     # print(m)
-    b = Board()
-    print(b.to_matrix().shape)
     # print(b.to_matrix().reshape((1, 3, 5, 5)))
-    print(keras.backend.image_data_format())
     K.set_image_data_format('channels_first')
-    print(keras.backend.image_data_format())
-
-    x = b.to_matrix().reshape((1, 3, 5, 5))
-
-    print(x.shape)
 
     black_cnn = create_model()
     white_cnn = create_model()
@@ -347,6 +335,7 @@ if __name__ == '__main__':
     nb_playouts = SizePolicy * [0]
     winwhite = 0
     winblack = 0
+    winners = []
 
 
     for game in range(1):
@@ -364,14 +353,6 @@ if __name__ == '__main__':
 
             while not (b.won(White) or b.won(Black)):
                 best_move = b.PUCT(tt, nb_playouts=800)
-                # print(a)
-                # b.print()
-                # nb_playouts[best_move.code()] += 1
-                # print(data)
-                # print("----")
-                # print(tt[b.h][0])
-                # print(tt[b.h][0] / np.sum(tt[b.h][0]))
-                # print(np.sum(tt[b.h][0]))
                 positions[b.turn].append([b.to_matrix(), tt[b.h][0] / np.sum(tt[b.h][0])])
                 b.play(best_move)
                 a += 1
@@ -380,8 +361,6 @@ if __name__ == '__main__':
             # [[3d_board, array([freq, winner])], ...]
 
             winner = b.winner()
-            # positions[winner].pop()
-
             for color in [White, Black]:
                 for sublist in positions[color]:
                     sublist[1] = np.append(sublist[1], winner)
@@ -395,13 +374,15 @@ if __name__ == '__main__':
             print("-_-_-_-_ NEW GAME -_-_-_-_")
             # b.print()
             print(str(winner) + ' is the winner')
+            winners += [winner]
             if b.won(White):
                 winwhite += 1
             if b.won(Black):
                 winblack += 1
 
-            white_cnn.fit(np.asarray(x_train_white), np.asarray(y_train_white), epochs=50, verbose=0)
-            black_cnn.fit(np.asarray(x_train_black), np.asarray(y_train_black), epochs=50, verbose=0)
+            white_cnn.fit(np.asarray(x_train_white), np.asarray(y_train_white), epochs=20, verbose=0)
+            # black_cnn.fit(np.asarray(x_train_black), np.asarray(y_train_black), epochs=50, verbose=0)
 
     print(winwhite)
     print(winblack)
+    print(winners)
