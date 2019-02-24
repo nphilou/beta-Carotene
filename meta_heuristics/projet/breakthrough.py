@@ -60,6 +60,7 @@ class Board(object):
                             m = Move(self.turn, i, j, i + k, j + l)
                             if m.valid(self):
                                 moves.append(m)
+        random.shuffle(moves)
         return moves
 
     def print(self):
@@ -355,7 +356,7 @@ if __name__ == '__main__':
         y_train_white = []
         y_train_black = []
 
-        for i in range(50):
+        for i in range(100):
             positions = {White: [], Black: []}
             b = Board()
             tt = {}
@@ -400,8 +401,8 @@ if __name__ == '__main__':
             if b.won(Black):
                 winblack += 1
 
-            white_cnn.fit(np.asarray(x_train_white), np.asarray(y_train_white), epochs=50, verbose=0)
-            black_cnn.fit(np.asarray(x_train_black), np.asarray(y_train_black), epochs=50, verbose=0)
+            # white_cnn.fit(np.asarray(x_train_white), np.asarray(y_train_white), epochs=5, verbose=0)
+            # black_cnn.fit(np.asarray(x_train_black), np.asarray(y_train_black), epochs=2, verbose=0)
 
     print(winwhite)
     print(winblack)
