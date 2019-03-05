@@ -145,8 +145,14 @@ df_country = pd.read_csv('countries_total.csv',
 # In[39]:
 
 
-df_population.head()
-
+df_population = pd.read_csv('EMLyon/population_total.csv')
+df_life = pd.read_csv('EMLyon/life_expectancy_years.csv')
+df_income = pd.read_csv('EMLyon/income_per_person.csv')
+df_country = pd.read_csv('EMLyon/countries_total.csv',
+                         skipinitialspace=True,
+                         usecols=[0, 5],
+                         header=0,
+                         names=['geo', 'region'])
 
 # In[40]:
 
@@ -398,18 +404,24 @@ exercise_15()
 
 
 # In[70]:
+print(df_life.columns)
+
+life = df_life.set_index('geo')
+life = life.loc[:, ['geo', '2018']]
+print(life.head())
+
+life.rename(columns={'2018': 'life'}, inplace=True)
+print(life.head())
+
+pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
+pop.rename(columns={'2018': 'pop'}, inplace=True)
+
+life_pop = life.join(pop)
+life_pop['sumprod'] = life_pop['life'] * life_pop['pop']
 
 
 # What is the weighted average life expectancy in 2018 (°)?
 def exercise_16():
-    life = df_life.loc[:, ['geo', '2018']].set_index('geo')
-    life.rename(columns={'2018': 'life'}, inplace=True)
-    pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
-    pop.rename(columns={'2018': 'pop'}, inplace=True)
-    
-    life_pop = life.join(pop)
-    life_pop['sumprod'] = life_pop['life'] * life_pop['pop']
-
     result = life_pop['sumprod'].sum() / life_pop['pop'].sum()
     return round(result, 1)
 
@@ -422,22 +434,13 @@ exercise_16()
 
 
 # In[132]:
+life_pop_region = life_pop.join(df_country.set_index('geo'))
+grouped = life_pop_region.loc[:, ['sumprod', 'pop', 'region']].groupby('region').sum()
+grouped['sumprod_by_pop'] = grouped['sumprod'] / grouped['pop']
 
 
 # What is the largest weighted average life expectancy by region in 2018 (°)?
 def exercise_17():
-    life = df_life.loc[:, ['2018']]
-    life.rename(columns={'2018': 'life'}, inplace=True)
-    pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
-    pop.rename(columns={'2018': 'pop'}, inplace=True)
-
-    life_pop = life.join(pop)
-    life_pop['sumprod'] = life_pop['life'] * life_pop['pop']
-
-    life_pop_region = life_pop.join(df_country.set_index('geo'))
-    grouped = life_pop_region.loc[:, ['sumprod', 'pop', 'region']].groupby('region').sum()
-    grouped['sumprod_by_pop'] = grouped['sumprod'] / grouped['pop']
-
     result = grouped['sumprod_by_pop'].max()
     return round(result, 1)
 
