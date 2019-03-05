@@ -1,3 +1,4 @@
+
 # coding: utf-8
 
 # # Assignment \#5 the Gapminder dataset
@@ -68,9 +69,7 @@
 # 
 # 15) Which region has the smallest total population in 2018?
 # 
-# - Perform an inner join between the life expectancy and the total population `DataFrame` objects, then an inner join
-# with the result and the country `DataFrame` object. Remember that overlapping columns names are renamed automatically
-# with the `_x` and `_y` suffixes in the left and right side:
+# - Perform an inner join between the life expectancy and the total population `DataFrame` objects, then an inner join with the result and the country `DataFrame` object. Remember that overlapping columns names are renamed automatically with the `_x` and `_y` suffixes in the left and right side:
 # 
 # 16) What is the weighted average life expectancy in 2018 (°) (+)?
 # 
@@ -78,9 +77,7 @@
 # 
 # 18) What is the smallest weighted average life expectancy by region in 2018 (°) (+)?
 # 
-# - Perform an inner join between the life expectancy and the total population `DataFrame` objects, then an inner join
-# with the result and the country `DataFrame` objects. Remember that overlapping columns are renamed automatically
-# with the `_x` and `_y` suffixes in the left and right side:
+# - Perform an inner join between the life expectancy and the total population `DataFrame` objects, then an inner join with the result and the country `DataFrame` objects. Remember that overlapping columns are renamed automatically with the `_x` and `_y` suffixes in the left and right side:
 # 
 # 19) What is the weighted average income per person in 2018 (°) (++)?
 # 
@@ -88,15 +85,11 @@
 # 
 # 21) Which region has the smallest weighted average income per person in 2018 (++)?
 # 
-# (+) The *weighted average life expectancy* is computed with the sum of the products of life expectancy by total
-# population of each country divided by the sum of total population of each country. It can be computed for all
-# countries in the world or for all countries in each region.
+# (+) The *weighted average life expectancy* is computed with the sum of the products of life expectancy by total population of each country divided by the sum of total population of each country. It can be computed for all countries in the world or for all countries in each region.
 # 
 # Hint: weighted average life expectancy $= \frac{\displaystyle\sum_{i} life_{i} \times pop_{i}}{\displaystyle\sum_{i} pop_{i}}$
 # 
-# (++) The *weighted average income per person* is computed with the sum of the products of income per person by total
-# population of each country divided by the sum of total population of each country. It can be computed for all
-# countries in the world or for all countries in each region.
+# (++) The *weighted average income per person* is computed with the sum of the products of income per person by total population of each country divided by the sum of total population of each country. It can be computed for all countries in the world or for all countries in each region.
 # 
 # Hint: weighted average income per person $= \frac{\displaystyle\sum_{i} income_{i} \times pop_{i}}{\displaystyle\sum_{i} pop_{i}}$
 # 
@@ -128,14 +121,14 @@
 # 
 # - Implement a graphics showing, for a given year, all countries positionned with their income per person on the `x` axis and their life expectancy on the `y` axis, and represented by their name, as well as, a circle which radius is linked to their total population and which color is linked to their region.
 
-# In[505]:
+# In[37]:
 
 
 # import
 import numpy as np
 import pandas as pd
 
-# In[506]:
+# In[38]:
 
 
 # loading the data
@@ -149,13 +142,13 @@ df_country = pd.read_csv('countries_total.csv',
                          header=0,
                          names=['geo', 'region'])
 
-# In[507]:
+# In[39]:
 
 
 df_population.head()
 
 
-# In[508]:
+# In[40]:
 
 
 # What is the sum of the total population in 2018?
@@ -164,14 +157,14 @@ def exercise_01():
     return result
 
 
-# In[509]:
+# In[41]:
 
 
 # run and check
 exercise_01()
 
 
-# In[510]:
+# In[42]:
 
 
 # Which country has the largest total population in 2018?
@@ -181,14 +174,14 @@ def exercise_02():
     return result
 
 
-# In[511]:
+# In[43]:
 
 
 # run and check
 exercise_02()
 
 
-# In[512]:
+# In[44]:
 
 
 # Which country has the smallest total population in 2018?
@@ -198,14 +191,14 @@ def exercise_03():
     return result
 
 
-# In[513]:
+# In[45]:
 
 
 # run and check
 exercise_03()
 
 
-# In[514]:
+# In[46]:
 
 
 # What is the average life expectancy in 2018 (°)?
@@ -214,14 +207,14 @@ def exercise_04():
     return round(result, 1)
 
 
-# In[515]:
+# In[47]:
 
 
 # run and check
 exercise_04()
 
 
-# In[516]:
+# In[48]:
 
 
 # What is the difference between the largest and the smallest life expectancy in 2018?
@@ -230,14 +223,14 @@ def exercise_05():
     return result
 
 
-# In[517]:
+# In[49]:
 
 
 # run and check
 exercise_05()
 
 
-# In[518]:
+# In[50]:
 
 
 # Which country has the largest life expectancy in 2018?
@@ -247,14 +240,14 @@ def exercise_06():
     return result
 
 
-# In[519]:
+# In[51]:
 
 
 # run and check
 exercise_06()
 
 
-# In[520]:
+# In[52]:
 
 
 # Which country has the smallest life expectancy in 2018?
@@ -263,30 +256,30 @@ def exercise_07():
     return result
 
 
-# In[521]:
+# In[53]:
 
 
 # run and check
 exercise_07()
 
 
-# In[590]:
+# In[102]:
 
 
 # In 2018, below which life expectancy threshold a country is in the first decile (°)?
 def exercise_08():
     result = pd.qcut(df_life['2018'], 10, retbins=True)
-    return result[1][1]
+    return round(result[1][1], 1)
 
 
-# In[591]:
+# In[103]:
 
 
 # run and check
 exercise_08()
 
 
-# In[522]:
+# In[56]:
 
 
 # What is the average income per person in 2018 (°)?
@@ -295,14 +288,14 @@ def exercise_09():
     return round(result, 1)
 
 
-# In[523]:
+# In[57]:
 
 
 # run and check
 exercise_09()
 
 
-# In[524]:
+# In[58]:
 
 
 # What is the ratio between the largest and the smallest income per person in 2018
@@ -311,14 +304,14 @@ def exercise_10():
     return result
 
 
-# In[525]:
+# In[59]:
 
 
 # run and check
 exercise_10()
 
 
-# In[526]:
+# In[60]:
 
 
 # Which country has the largest income per person in 2018?
@@ -327,14 +320,14 @@ def exercise_11():
     return result
 
 
-# In[527]:
+# In[61]:
 
 
 # run and check
 exercise_11()
 
 
-# In[528]:
+# In[62]:
 
 
 # Which country has the smallest income per person in 2018?
@@ -343,14 +336,14 @@ def exercise_12():
     return result
 
 
-# In[529]:
+# In[63]:
 
 
 # run and check
 exercise_12()
 
 
-# In[530]:
+# In[64]:
 
 
 # In 2018, above which income per person threshold a country is in the last decile (°)?
@@ -359,14 +352,14 @@ def exercise_13():
     return result[1][9]
 
 
-# In[531]:
+# In[65]:
 
 
 # run and check
 exercise_13()
 
 
-# In[532]:
+# In[66]:
 
 
 # Which region has the largest total population in 2018?
@@ -378,14 +371,14 @@ def exercise_14():
     return result
 
 
-# In[533]:
+# In[67]:
 
 
 # run and check
 exercise_14()
 
 
-# In[534]:
+# In[68]:
 
 
 # Which region has the smallest total population in 2018?
@@ -397,14 +390,14 @@ def exercise_15():
     return result
 
 
-# In[535]:
+# In[69]:
 
 
 # run and check
 exercise_15()
 
 
-# In[536]:
+# In[70]:
 
 
 # What is the weighted average life expectancy in 2018 (°)?
@@ -413,7 +406,7 @@ def exercise_16():
     life.rename(columns={'2018': 'life'}, inplace=True)
     pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
     pop.rename(columns={'2018': 'pop'}, inplace=True)
-
+    
     life_pop = life.join(pop)
     life_pop['sumprod'] = life_pop['life'] * life_pop['pop']
 
@@ -421,19 +414,19 @@ def exercise_16():
     return round(result, 1)
 
 
-# In[537]:
+# In[71]:
 
 
 # run and check
 exercise_16()
 
 
-# In[548]:
+# In[132]:
 
 
 # What is the largest weighted average life expectancy by region in 2018 (°)?
 def exercise_17():
-    life = df_life.loc[:, ['geo', '2018']].set_index('geo')
+    life = df_life.loc[:, ['2018']]
     life.rename(columns={'2018': 'life'}, inplace=True)
     pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
     pop.rename(columns={'2018': 'pop'}, inplace=True)
@@ -446,23 +439,22 @@ def exercise_17():
     grouped['sumprod_by_pop'] = grouped['sumprod'] / grouped['pop']
 
     result = grouped['sumprod_by_pop'].max()
+    return round(result, 1)
 
-    return result
 
-
-# In[549]:
+# In[133]:
 
 
 # run and check
 exercise_17()
 
 
-# In[550]:
+# In[134]:
 
 
 # What is the smallest weighted average life expectancy by region in 2018 (°)?
 def exercise_18():
-    life = df_life.loc[:, ['geo', '2018']].set_index('geo')
+    life = df_life.loc[:, ['2018']]
     life.rename(columns={'2018': 'life'}, inplace=True)
     pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
     pop.rename(columns={'2018': 'pop'}, inplace=True)
@@ -475,17 +467,17 @@ def exercise_18():
     grouped['sumprod_by_pop'] = grouped['sumprod'] / grouped['pop']
 
     result = grouped['sumprod_by_pop'].min()
-    return result
+    return round(result, 1)
 
 
-# In[551]:
+# In[135]:
 
 
 # run and check
 exercise_18()
 
 
-# In[552]:
+# In[76]:
 
 
 # What is the weighted average income per person in 2018 (°)?
@@ -494,7 +486,7 @@ def exercise_19():
     income.rename(columns={'2018': 'income'}, inplace=True)
     pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
     pop.rename(columns={'2018': 'pop'}, inplace=True)
-
+    
     income_pop = income.join(pop)
     income_pop['sumprod'] = income_pop['income'] * income_pop['pop']
 
@@ -503,14 +495,14 @@ def exercise_19():
     return round(result, 1)
 
 
-# In[553]:
+# In[77]:
 
 
 # run and check
 exercise_19()
 
 
-# In[554]:
+# In[78]:
 
 
 # Which region has the largest weighted average income per person in 2018?
@@ -519,25 +511,25 @@ def exercise_20():
     income.rename(columns={'2018': 'income'}, inplace=True)
     pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
     pop.rename(columns={'2018': 'pop'}, inplace=True)
-
+    
     income_pop = income.join(pop)
     income_pop['sumprod'] = income_pop['income'] * income_pop['pop']
 
     income_pop_region = income_pop.join(df_country.set_index('geo'))
-
+    
     grouped = income_pop_region.loc[:, ['sumprod', 'region']].groupby('region').sum()
     result = grouped['sumprod'].idxmax()
     return result
 
 
-# In[555]:
+# In[79]:
 
 
 # run and check
 exercise_20()
 
 
-# In[556]:
+# In[80]:
 
 
 # Which region has the smallest weighted average income per person in 2018?
@@ -546,25 +538,25 @@ def exercise_21():
     income.rename(columns={'2018': 'income'}, inplace=True)
     pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
     pop.rename(columns={'2018': 'pop'}, inplace=True)
-
+    
     income_pop = income.join(pop)
     income_pop['sumprod'] = income_pop['income'] * income_pop['pop']
 
     income_pop_region = income_pop.join(df_country.set_index('geo'))
-
+    
     grouped = income_pop_region.loc[:, ['sumprod', 'region']].groupby('region').sum()
     result = grouped['sumprod'].idxmin()
     return result
 
 
-# In[557]:
+# In[81]:
 
 
 # run and check
 exercise_21()
 
 
-# In[558]:
+# In[82]:
 
 
 # Which country has the smallest average life expectancy accross years?
@@ -575,14 +567,14 @@ def exercise_22():
     return result
 
 
-# In[559]:
+# In[83]:
 
 
 # run and check
 exercise_22()
 
 
-# In[560]:
+# In[84]:
 
 
 # Which country has the smallest average income per person accross years?
@@ -593,14 +585,14 @@ def exercise_23():
     return result
 
 
-# In[561]:
+# In[85]:
 
 
 # run and check
 exercise_23()
 
 
-# In[596]:
+# In[146]:
 
 
 # Which country has the highest mean correlation of total population with other countries? 
@@ -611,31 +603,32 @@ def exercise_24():
     return result
 
 
-# In[597]:
+# In[147]:
 
 
 # run and check
 exercise_24()
 
 
-# In[570]:
+# In[150]:
 
 
 # Which country has the highest mean correlation of life expectancy with other countries? 
 def exercise_25():
     corr = df_life.T.corr()
-    result = corr['mean'] = corr.mean(axis=1).idxmax()
+    corr['mean'] = corr.mean(axis=1)
+    result = corr['mean'].idxmax()
     return result
 
 
-# In[571]:
+# In[151]:
 
 
 # run and check
 exercise_25()
 
 
-# In[572]:
+# In[140]:
 
 
 # Which country has the highest mean correlation of income per person with other countries? 
@@ -645,30 +638,30 @@ def exercise_26():
     return result
 
 
-# In[573]:
+# In[141]:
 
 
 # run and check
 exercise_26()
 
 
-# In[576]:
+# In[188]:
 
 
 # What is the length of the new DataFrame object for total population?
 def exercise_27():
-    result = len(df_population.reset_index().melt(id_vars='geo'))
+    result = len(df_population.melt(id_vars='geo'))
     return result
 
 
-# In[577]:
+# In[189]:
 
 
 # run and check
 exercise_27()
 
 
-# In[578]:
+# In[192]:
 
 
 # What is the length of the new DataFrame object for life expectancy?
@@ -677,14 +670,14 @@ def exercise_28():
     return result
 
 
-# In[579]:
+# In[193]:
 
 
 # run and check
 exercise_28()
 
 
-# In[580]:
+# In[196]:
 
 
 # What is the length of the new DataFrame object for income per person?
@@ -693,26 +686,33 @@ def exercise_29():
     return result
 
 
-# In[581]:
+# In[197]:
 
 
 # run and check
 exercise_29()
 
 
-# In[582]:
+# In[210]:
 
 
 # What is the length of the DataFrame object merging total population, life expectancy and income per person in a long format?
 def exercise_30():
-    print(df_population.head())
-    print(df_life.head())
-    result = pd.merge(df_population, df_life, on='geo')
+    pop = df_population.melt(id_vars='geo', var_name='year', value_name='pop')
+    life = df_life.reset_index().melt(id_vars='geo', var_name='year', value_name='life')
+    income = df_income.reset_index().melt(id_vars='geo', var_name='year', value_name='income')
+
+    pop_life = pd.merge(pop, life, on=['geo', 'year'])
+    pop_life_income = pd.merge(pop_life, income, on=['geo', 'year'])
+
+    result = len(pop_life_income.dropna())
+    
     return result
 
 
-# In[583]:
+# In[212]:
 
 
 # run and check
 exercise_30()
+
