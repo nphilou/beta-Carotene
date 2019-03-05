@@ -153,6 +153,9 @@ df_country = pd.read_csv('EMLyon/countries_total.csv',
                          usecols=[0, 5],
                          header=0,
                          names=['geo', 'region'])
+df_population.rename(columns=lambda x: x.strip(), inplace=True)
+df_life.rename(columns=lambda x: x.strip(), inplace=True)
+df_income.rename(columns=lambda x: x.strip(), inplace=True)
 
 # In[40]:
 
@@ -404,21 +407,14 @@ exercise_15()
 
 
 # In[70]:
-print(df_life.columns)
-
-life = df_life.set_index('geo')
-life = life.loc[:, ['geo', '2018']]
-print(life.head())
-
+life = df_life.loc[:, ['geo', '2018']].set_index('geo')
 life.rename(columns={'2018': 'life'}, inplace=True)
-print(life.head())
 
 pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
 pop.rename(columns={'2018': 'pop'}, inplace=True)
 
 life_pop = life.join(pop)
 life_pop['sumprod'] = life_pop['life'] * life_pop['pop']
-
 
 # What is the weighted average life expectancy in 2018 (°)?
 def exercise_16():
@@ -437,6 +433,8 @@ exercise_16()
 life_pop_region = life_pop.join(df_country.set_index('geo'))
 grouped = life_pop_region.loc[:, ['sumprod', 'pop', 'region']].groupby('region').sum()
 grouped['sumprod_by_pop'] = grouped['sumprod'] / grouped['pop']
+
+print(life_pop_region.head())
 
 
 # What is the largest weighted average life expectancy by region in 2018 (°)?
@@ -457,17 +455,6 @@ exercise_17()
 
 # What is the smallest weighted average life expectancy by region in 2018 (°)?
 def exercise_18():
-    life = df_life.loc[:, ['2018']]
-    life.rename(columns={'2018': 'life'}, inplace=True)
-    pop = df_population.loc[:, ['geo', '2018']].set_index('geo')
-    pop.rename(columns={'2018': 'pop'}, inplace=True)
-
-    life_pop = life.join(pop)
-    life_pop['sumprod'] = life_pop['life'] * life_pop['pop']
-
-    life_pop_region = life_pop.join(df_country.set_index('geo'))
-    grouped = life_pop_region.loc[:, ['sumprod', 'pop', 'region']].groupby('region').sum()
-    grouped['sumprod_by_pop'] = grouped['sumprod'] / grouped['pop']
 
     result = grouped['sumprod_by_pop'].min()
     return round(result, 1)
