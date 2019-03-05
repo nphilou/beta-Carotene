@@ -369,13 +369,12 @@ exercise_13()
 
 
 # In[66]:
+pop_regions = df_population.loc[:, ['2018']].join(df_country)
+pop_grouped = pop_regions.groupby('region').sum()
 
 
 # Which region has the largest total population in 2018?
 def exercise_14():
-    pop_regions = df_population.loc[:, ['2018']].join(df_country)
-
-    pop_grouped = pop_regions.groupby('region').sum()
     result = pop_grouped['2018'].idxmax()
     return result
 
@@ -392,9 +391,6 @@ exercise_14()
 
 # Which region has the smallest total population in 2018?
 def exercise_15():
-    pop_regions = df_population.loc[:, ['2018']].join(df_country)
-
-    pop_grouped = pop_regions.groupby('region').sum()
     result = pop_grouped['2018'].idxmin()
     return result
 
