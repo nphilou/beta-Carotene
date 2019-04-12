@@ -18,7 +18,7 @@ env = gym.make('CartPole-v0')
 
 
 def simulation():
-    for i_episode in range(3):
+    for i_episode in range(1):
         observation = env.reset()
         reward = 0
         for t in range(20):
@@ -77,8 +77,10 @@ N = nval ** 4  # taille de l'espace d'etat
 def discretise(x, mini, maxi):
     # discretise x
     # renvoie un entier entre 0 et nval-1
-    if x < mini:  x = mini
-    if x > maxi:  x = maxi
+    if x < mini:
+        x = mini
+    if x > maxi:
+        x = maxi
     return int(np.floor((x - mini) * nval / (maxi - mini + 0.0001)))
 
 
@@ -91,13 +93,6 @@ def observation_vers_etat(observation):
 
 
 # Maintenant, on peut donc récupérer à partir d'une observation le numéro de l'état associé:
-
-
-observation = env.reset()
-s = observation_vers_etat(observation)
-print("le numero de l'etat de depart est le :", s)
-
-env.close()
 
 
 # ** Exercice **:
@@ -165,9 +160,9 @@ def ql_tabulaire(M, e, a=0.001, y=1, T=100):
             if done:
                 q[state][action] = q[state][action] + a * reward
             else:
-                #print(q[next_state])
-                #print(q[state][action])
-                #print(q[next_state] - q[state][action])
+                # print(q[next_state])
+                # print(q[state][action])
+                # print(q[next_state] - q[state][action])
                 q[state][action] = q[state][action] + a * (reward + y * np.argmax(q[next_state] - q[state][action]))
 
             if done:
@@ -176,16 +171,15 @@ def ql_tabulaire(M, e, a=0.001, y=1, T=100):
                 # print(nb_timesteps)
                 break
 
+        # Tous les 100 épisodes sur M, ajouter le nombre moyen de timesteps
         if i_episode % 100 == 0:
-            nb_timesteps_episode.append(nb_timesteps/100)
+            nb_timesteps_episode.append(nb_timesteps / 100)
             nb_timesteps = 0
 
     print(nb_timesteps_episode)
     plt.plot(nb_timesteps_episode)
     plt.show()
 
-
-ql_tabulaire(10000, 0.1, a=0.001, y=1, T=100)
 
 # ## Seconde partie: Implémentation du Q-Learning avec approximation de fonction
 # 
@@ -205,3 +199,13 @@ ql_tabulaire(10000, 0.1, a=0.001, y=1, T=100)
 def k(x):
     return 1 / (1 + x ** 2)
 
+
+if __name__ == '__main__':
+    # simulation()
+    # observation = env.reset()
+    # s = observation_vers_etat(observation)
+    # print("le numero de l'etat de depart est le :", s)
+
+    env.close()
+
+    ql_tabulaire(10000, 0.1, a=0.001, y=1, T=100)
