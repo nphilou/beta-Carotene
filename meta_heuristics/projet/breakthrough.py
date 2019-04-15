@@ -3,6 +3,7 @@ import math
 import keras
 import numpy as np
 import random
+import time
 from sys import stdin, stdout, stderr
 
 from keras import Sequential
@@ -322,6 +323,9 @@ def create_model():
 
 
 if __name__ == '__main__':
+
+    start_time = time.time()
+
     # m = b.flat(100)  # < MCTS
     # print(m)
     b = Board()
@@ -356,7 +360,7 @@ if __name__ == '__main__':
         y_train_white = []
         y_train_black = []
 
-        for i in range(100):
+        for i in range(10):
             positions = {White: [], Black: []}
             b = Board()
             tt = {}
@@ -406,3 +410,5 @@ if __name__ == '__main__':
 
     print(winwhite)
     print(winblack)
+
+    print("--- %s seconds ---" % (time.time() - start_time))

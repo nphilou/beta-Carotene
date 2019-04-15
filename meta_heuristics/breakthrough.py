@@ -343,7 +343,7 @@ if __name__ == '__main__':
 
     # print(tt1)
 
-    board.PUCT(tt=tt1, nb_playouts=400)
+    board.PUCT(tt=tt1, nb_playouts=10000)
 
     # m = Move(White, 1, 0, 2, 0)
     # print(m.code())
