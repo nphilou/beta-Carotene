@@ -11,7 +11,7 @@ with import <nixpkgs> {};
         pandas
         Keras
         tensorflowWithCuda
-        cudnn
+        cudnn_cudatoolkit_10
         ipykernel
     ]
   )
