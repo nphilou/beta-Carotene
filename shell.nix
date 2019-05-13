@@ -1,4 +1,7 @@
-with import <nixpkgs> {};
+# with import <nixpkgs> {};
+with import <unstable> {
+  config.allowUnfree = true;
+};
 
 (
   python36.withPackages (
