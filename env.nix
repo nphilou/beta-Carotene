@@ -26,6 +26,7 @@ python36.withPackages (
     matplotlib
     scikitlearn
     pandas
+    seaborn
     Keras
     tensorflowWithCuda
     cudnn_cudatoolkit_10

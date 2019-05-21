@@ -12,6 +12,7 @@ with import <unstable> {
         matplotlib
         scikitlearn
         pandas
+        seaborn
         Keras
         tensorflowWithCuda
         cudnn_cudatoolkit_10
